@@ -1,0 +1,26 @@
+
+.color-picker {
+    width: 100%;
+}
+
+body {
+    background-color: #f3f3f3
+}
+
+.card-content {
+    /* height: 300px; */
+}
+
+.sp-hue {
+    width: 10%;
+    left: 92%;
+}
+
+.sp-color {
+    width: 90%;
+    right: 11%;
+}
+
+.sp-picker-container {
+    width: 90% !important;
+}

@@ -16,6 +16,13 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js">
     </script>
 
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">
     <link href="static/css/control.css" rel="stylesheet">
@@ -28,24 +35,39 @@
 
 <div class="container">
     <div class="row">
-        <form class="col s12" action="#">
+        <div class="divider"></div>
+        <div class="section">
             <div class="row">
-                <div class="col s6">
-                    <label for="light-checkbox">Light</label>
-                    <div id="light-switch" class="switch">
-                        <label>
-                        Off
-                        <input id="light-checkbox" type="checkbox">
-                        <span class="lever"></span>
-                        On
-                        </label>
-                    </div>
-                </div>
+                <div id="lights" class="col s12"></div>
             </div>
-        </form>
+        </div>
    </div>
 </div>
 
-<script src="static/js/control.js"></script>
+<!-- <script src="static/js/control.js"></script> -->
+<script src="static/js/light-panel.jsx" type="text/babel"></script>
+<script type="text/babel">
+    function LightPanel() {
+        return <div>
+            {% for key, light in lights.items() %}
+                {% if light.state.reachable %}
+                    {% if light.type == 'Dimmable light' %}
+                        <WhiteLightPanel lightId="{{ key }}"
+                            name="{{ light.name }}" />
+                    {% endif %}
+                    {% if light.type == 'Extended color light' %}
+                        <ColorLightPanel lightId="{{ key }}"
+                            name="{{ light.name }}" />
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>;
+    }
+
+    ReactDOM.render(
+        <LightPanel />,
+        document.getElementById("lights")
+    );
+</script>
 </body>
 </html>
