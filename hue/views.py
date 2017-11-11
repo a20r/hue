@@ -59,8 +59,6 @@ def change_color_temperature():
 @app.route("/", methods=["GET"])
 def get_index():
     lights = bridge.lights()
-    for light in lights:
-        lights[light]["name"] = app.config["lights"][light]
     return render_template("index.html", lights=lights)
 
 
@@ -68,12 +66,8 @@ def get_index():
 def get_test():
     color_light = dict(
         type="Extended color light",
-        name="Hue color light 1",
+        name="Hue color light 3",
         state={"reachable": True,
                "on": False})
     lights = {"3": color_light}
-
-    for light in lights:
-        lights[light]["name"] = app.config["lights"][int(light)]
-
     return render_template("index.html", lights=lights)

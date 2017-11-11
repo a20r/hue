@@ -200,6 +200,18 @@ class LightTemperatureSlider extends React.Component {
     }
 }
 
+class LightName extends React.Component {
+    constructor(props) {
+        super(props);
+        this.id = "light-name-" + props.lightId;
+    }
+
+    render() {
+        return <input type="text" className="editable-name"
+            defaultValue={this.props.name} />
+    }
+}
+
 function FormLabel(props) {
     var labelFor = props.name + "-" + props.lightId;
     return <label htmlFor={labelFor}>{props.val}</label>;
