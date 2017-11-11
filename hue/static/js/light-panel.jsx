@@ -33,7 +33,7 @@ class LightSwitch extends React.Component {
                 <label>
                     Off
                     <input id={this.id}
-                        type="checkbox"/>
+                        type="checkbox" />
                     <span className="lever"></span>
                     On
                 </label>
@@ -59,6 +59,52 @@ class LightSwitch extends React.Component {
 }
 
 class LightColorPicker extends React.Component {
+    constructor(props) {
+        super(props);
+        this.id = "light-color-picker-" + this.props.lightId;
+    }
+
+    render() {
+        return <div className="color-picker" id={this.id}
+            onTouchMove={this.onTouchMove.bind(this)}></div>;
+    }
+
+    componentDidMount() {
+        var self = this;
+        var cw = 0.5 * $("#" + this.id).width();
+        $("#" + this.id).css("height", cw + "px");
+    }
+
+    changeLightColor = throttle(function(hue, li) {
+        $.ajax({
+            url: "/color",
+            type: "POST",
+            data: JSON.stringify({
+                light: this.props.lightId,
+                hue: hue,
+                saturation: li
+            }),
+            contentType:"application/json; charset=utf-8",
+            dataType: "json"
+        });
+    }.bind(this), 150);
+
+    onTouchMove(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var touch = e.touches[0]
+        var elem = $("#" + this.id);
+        var rect = elem[0].getBoundingClientRect();
+        var x = touch.clientX - rect.left;
+        var y = touch.clientY - rect.top;
+        var hue = Math.round(360 * x / elem.width());
+        var li = 50 + Math.round(50 * y / elem.height());
+        elem.css("background-color", "hsl(" + hue + ", 100%, " + li + "%)");
+        this.changeLightColor(hue, li);
+    }
+}
+
+class OldLightColorPicker extends React.Component {
     constructor(props) {
         super(props);
         this.id = "light-color-picker-" + this.props.lightId;
@@ -102,7 +148,8 @@ class LightBrightnessSlider extends React.Component {
 
     render() {
         return <p className="range-field">
-            <input type="range" id={this.id} min="0" max="255" />
+            <input type="range" id={this.id} min="0" max="255"
+                defaultValue="0"/>
         </p>
     }
 
@@ -131,7 +178,8 @@ class LightTemperatureSlider extends React.Component {
 
     render() {
         return <p className="range-field">
-            <input type="range" id={this.id} min="153" max="500" />
+            <input type="range" id={this.id} min="153" max="500"
+                defaultValue="153"/>
         </p>
     }
 
@@ -183,10 +231,8 @@ function LightTemperatureSliderForm(props) {
 
 function LightColorPickerForm(props) {
     return  <div className="row">
-        <div className="col s12">
-            <div className="input-field col s12">
-                <LightColorPicker lightId={props.lightId} />
-            </div>
+        <div className="input-field col s12">
+            <LightColorPicker lightId={props.lightId} />
         </div>
     </div>;
 }
@@ -229,12 +275,12 @@ function WhiteLightPanel(props) {
     </div>;
 }
 
-function LightPanel() {
-    return <div>
-        <ColorLightPanel lightId="3" name="Next to TV" />
-        <WhiteLightPanel lightId="2" name="Next to bed" />
-    </div>;
-}
+// function LightPanel() {
+//     return <div>
+//         <ColorLightPanel lightId="3" name="Next to TV" />
+//         <WhiteLightPanel lightId="2" name="Next to bed" />
+//     </div>;
+// }
 
 // ReactDOM.render(
 //     <LightPanel />,

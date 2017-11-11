@@ -4,7 +4,14 @@
 }
 
 body {
-    background-color: #f3f3f3
+    background-color: #f3f3f3;
+    overflow: overlay;
+}
+
+.color-picker {
+    width: 100%;
+    touch-action: manipulation;
+    cursor: pointer;
 }
 
 .card-content {

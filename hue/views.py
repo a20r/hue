@@ -2,13 +2,11 @@
 from __future__ import division
 from flask import render_template
 from flask import request
-from server import app
+from hue import app
 import json
 import qhue
 
-BRIDGE_IP = "192.168.1.214"
-USER = "99v4t-XnAI42M0U6Faojb-dsGav5nfseGoBDbfCo"
-bridge = qhue.Bridge(BRIDGE_IP, USER)
+bridge = qhue.Bridge(app.config["bridge_ip"], app.config["bridge_user"])
 
 
 @app.route("/state", methods=["POST"])
@@ -21,6 +19,16 @@ def change_light_state():
 @app.route("/light/<light>", methods=["GET"])
 def get_light_state(light):
     return json.dumps(bridge.lights[light]())
+
+
+@app.route("/light_test/<light>", methods=["GET"])
+def get_light_state_test(light):
+    color_light = dict(
+        type="Extended color light",
+        name="Hue color light 1",
+        state={"reachable": True,
+               "on": True})
+    return json.dumps(color_light)
 
 
 @app.route("/color", methods=["POST"])
@@ -51,4 +59,21 @@ def change_color_temperature():
 @app.route("/", methods=["GET"])
 def get_index():
     lights = bridge.lights()
+    for light in lights:
+        lights[light]["name"] = app.config["lights"][light]
+    return render_template("index.html", lights=lights)
+
+
+@app.route("/test", methods=["GET"])
+def get_test():
+    color_light = dict(
+        type="Extended color light",
+        name="Hue color light 1",
+        state={"reachable": True,
+               "on": False})
+    lights = {"3": color_light}
+
+    for light in lights:
+        lights[light]["name"] = app.config["lights"][int(light)]
+
     return render_template("index.html", lights=lights)
