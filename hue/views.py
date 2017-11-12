@@ -33,9 +33,22 @@ def get_light_state_test(light):
 
 @app.route("/color", methods=["POST"])
 def change_light_color():
+    max_hue = 65534
+    max_sat = 255
     form = request.get_json()
     hue = int((form["hue"] / 360) * 65534)
     sat = int(form["saturation"] * 254)
+
+    if hue < 0:
+        hue = 0
+    elif hue > max_hue:
+        hue = max_hue
+
+    if sat < 0:
+        sat = 0
+    if sat > max_sat:
+        sat = max_sat
+
     bridge.lights[form["light"]].state(hue=hue, sat=sat)
     return "", 200
 

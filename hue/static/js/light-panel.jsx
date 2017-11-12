@@ -101,7 +101,7 @@ class LightColorPicker extends React.Component {
         var li = 50 + Math.round(50 * y / elem.height());
         var psat = y / elem.height();
         elem.css("background-color", "hsl(" + hue + ", 100%, " + li + "%)");
-        this.changeLightColor(hue, psat);
+        this.changeLightColor(hue, 1 - psat);
     }
 }
 
