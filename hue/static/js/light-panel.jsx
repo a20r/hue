@@ -99,7 +99,7 @@ class LightColorPicker extends React.Component {
         var y = touch.clientY - rect.top;
         var hue = Math.round(360 * x / elem.width());
         var li = 50 + Math.round(50 * y / elem.height());
-        var psat = Math.round(100 * y / elem.height());
+        var psat = y / elem.height();
         elem.css("background-color", "hsl(" + hue + ", 100%, " + li + "%)");
         this.changeLightColor(hue, psat);
     }
